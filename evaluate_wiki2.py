@@ -88,8 +88,7 @@ def main() -> None:
         trust_remote_code=True,
         device_map=device_map,
         max_memory=max_mem,
-        torch_dtype=torch_dtype,
-        quantization_config=quant_cfg,
+        torch_dtype=torch_dtype
     )
     if to_device:
         model = model.to(to_device)

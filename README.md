@@ -8,6 +8,9 @@
 
  The **L**arge **L**anguage **M**odel **C**ompression **Bench**mark (LLMCBench) is a rigorously designed benchmark with an in-depth analysis for LLM compression algorithms. 
 
+
+ **IMPORTANT**: The main functionality of our repo lie in run.sh
+
 ## Installation
 
 ```

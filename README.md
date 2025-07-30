@@ -1,6 +1,6 @@
-# LLMCBench: Benchmarking Large Language Model Compression for Efficient Deployment
+# Analyzing the Effectiveness of Pruning, Quantization & Distillation for Next-Generation LLM Compression
 
-![image-20241026195404186](./figs/f1.png)
+![Summarized Results](./final-results.png)
 
 ## Introduction
 

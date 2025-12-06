@@ -250,7 +250,7 @@ def distillation_loss(student_logits, teacher_logits, temperature: float = 2.0):
     loss = KLDivLoss(reduction="batchmean")(student_log_probs, teacher_probs) * (temperature**2)
     
     # More reasonable clamp
-    loss = torch.clamp(loss, max=10.0)  # Instead of 100.0
+    loss = torch.clamp(loss, max=100.0)  # Instead of 100.0
     
     return loss
 
@@ -688,7 +688,7 @@ def main():
         warmup_steps=args.warmup_steps,
         bf16=True,
         bf16_full_eval=True,
-        max_grad_norm=0.5,
+        max_grad_norm=1.0,
         ddp_find_unused_parameters=False,
         eval_strategy="steps",
         eval_steps=500,

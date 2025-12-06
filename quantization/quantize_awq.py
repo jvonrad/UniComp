@@ -19,6 +19,7 @@ model = AutoAWQForCausalLM.from_pretrained(
     torch_dtype="auto",
     device_map="auto",
     safetensors=True,
+    
 )
 tokenizer = AutoTokenizer.from_pretrained(model_id, use_fast=False)
 

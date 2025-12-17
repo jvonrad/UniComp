@@ -1,9 +1,11 @@
 import requests
 import json
 
-URL = "http://localhost:8000/v1/chat/completions"
-MODEL = "/home/geiger/gwb082/Jonathans_Thesis/compressed-models/quantized/Qwen3-8B-awq"
+# http://<mlcbm007-hostname>:8000/v1/chat/completions
+MODEL="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/quantized/Qwen3-8B-AWQ"  
+URL = "http://mlcbm009:8000/v1/chat/completions"
 
+print("Your current model: ", MODEL)
 messages = []
 
 while True:

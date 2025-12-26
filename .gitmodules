@@ -17,3 +17,6 @@
 [submodule "TrustLLM"]
 	path = TrustLLM
 	url = https://github.com/HowieHwong/TrustLLM.git
+[submodule "lighteval"]
+	path = lighteval
+	url = https://github.com/jvonrad/lighteval.git

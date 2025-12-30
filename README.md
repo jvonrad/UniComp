@@ -15,3 +15,48 @@
 ## Usage
 
 **IMPORTANT**: The main functionality of our repo lie in run.sh 
+
+
+## II. Evaluate Reliablity
+
+
+### Generation
+> cd TrustLLM
+
+Edit generate_all.py --> Fill MODEL_PATH with "/path/to/target/model"
+Add target model to config.py --> model_map "/path/to/target/model: model_name" and add "model_name" to openai_model array
+
+Serve Model via vLLM on GPU: 
+> conda activate vllm
+> vllm serve "/path/to/target/model" \
+> --host 0.0.0.0 \
+> --port 8000 \
+> --dtype auto \
+> --api-key localtoken \
+> --served-model-name model_name
+
+Edit config.py --> openai_key="localtoken" and openai_api_base="http://localhost:8000/v1"
+
+SSH to same Compute Node (any point where 0.0.0.0:8000 can be accessed) :
+> conda activate trustllm
+> python generate_all.
+
+==> All generated responses will be stored in /UniCOMP/TrustLLM/generation_results/{current_model}"
+
+### Evaluation
+
+> cd TrustLLM
+
+Because the model responses will be evaluated by GPT-4 turbo we have to change the openai_key and access_point:
+Edit config.py --> openai_key="Your_Token" and openai_api_base="https://api.openai.com/v1"
+
+Edit evaluate.py --> current_model="model_name"
+
+> conda activate trustLLM
+> python evaluate.py
+or
+> sbatch UniCOMP/run.sh ## (only comment out python -u $CODE_DIR/TrustLLM/evaluate.py and conda activate trustllm)
+
+==> Results will be printed 
+
+

@@ -4,15 +4,13 @@
 #SBATCH --ntasks-per-node=1           # ein Task (Prozess) pro GPU
 #SBATCH --cpus-per-task=8             # pro Prozess
 #SBATCH --partition=h100-ferranti
-#SBATCH --gres=gpu:1                  # vier GPUs
+#SBATCH --gres=gpu:0                  # vier GPUs
 #SBATCH --mem=80G                   # Gesamt-RAM (optional anpassen)
-#SBATCH --time=0-20:00:00             # z.B. 2 Tage
+#SBATCH --time=0-4:00:00             # z.B. 2 Tage
 #SBATCH --output=logs/distill.%j.out
 #SBATCH --error=logs/distill.%j.err
 #SBATCH --mail-user=jonathan.sakouhi@gmail.com
 #SBATCH --mail-type=END
-
-
 
 
 # Fail-Fast / Debug
@@ -27,34 +25,91 @@ export HF_HOME="$HOME/.cache/huggingface"
 export HF_DATASETS_CACHE="$HOME/.cache/huggingface/datasets"
 CODE_DIR="/home/geiger/gwb082/Jonathans_Thesis/LLMCBench"
 MODEL_DIR="/home/geiger/gwb082/LLMs"
-LLAMA_2_7B="$MODEL_DIR/llama-2/llama-2-7b-hf"
-LLAMA_2_13B="$MODEL_DIR/llama-2/llama-2-13b-hf"
-LLAMA_2_70B="$MODEL_DIR/llama-2/llama-2-70b-hf"
-LLAMA_3_1B="$MODEL_DIR/llama-3/Llama-3.2-1B"
-LLAMA_3_8B="/home/geiger/gwb082/LLMs/llama-3/Meta-Llama-3-8B"
-LLAMA_3_8B_MINITRON="/home/geiger/gwb082/LLMs/llama-3/Llama-3.1-Minitron-4B-Depth-Base"
-LLAMA_3_8B_IT="/home/geiger/gwb082/LLMs/llama-3/Meta-Llama-3-8B-Instruct"
-LLAMA_3_8B_FT="/home/geiger/gwb082/LLMs/llama-3/llama_3_1_8b_pile_finetuned_100m"  # Fine-tuned Llama-3-8B
-LLAMA_3_70B="$MODEL_DIR/llama-3/Llama-3.1-70B"
-QWEN_3_0_6B_BASE="/home/geiger/gwb082/LLMs/Qwen/Qwen3-0.6B-Base"
-QWEN_3_1_7B_BASE="$MODEL_DIR/Qwen/Qwen3-1.7B-Base"
-QWEN_3_4B_BASE="$MODEL_DIR/Qwen/Qwen3-4B-Base"
-QWEN_3_8B_BASE="/home/geiger/gwb082/LLMs/Qwen/Qwen3-8B-Base"
-QWEN_3_14B_BASE="$MODEL_DIR/Qwen/Qwen3-14B-Base"
-QWEN_3_32B="$MODEL_DIR/Qwen/Qwen3-32B"
-QWEN_3_0_6B_IT="$MODEL_DIR/Qwen/Qwen3-0.6B"
-QWEN_3_1_7B_IT="$MODEL_DIR/Qwen/Qwen3-1.7B"
-QWEN_3_4B_IT="$MODEL_DIR/Qwen/Qwen3-4B"
-QWEN_3_8B_IT="$MODEL_DIR/Qwen/Qwen3-8B"
-QWEN_3_14B_IT="$MODEL_DIR/Qwen/Qwen3-14B"
-QWEN_QWQ="$MODEL_DIR/Qwen/Qwen-QwQ-32B"
-QWEN_3_30B_A3B="$MODEL_DIR/Qwen/Qwen3-30B-A3B-Base"
-DEEPSEEK_MOE_16B_BASE="$MODEL_DIR/deepseek/deepseek-moe-16b-base"
-DEEPSEEK_R1_LLAMA_3_8B="$MODEL_DIR/deepseek/DeepSeek-R1-Distill-Llama-8B"
-DEEPSEEK_R1_LLAMA_3_70B="$MODEL_DIR/deepseek/DeepSeek-R1-Distill-Llama-70B"
 
-CHECKPOINT="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/quantized/Qwen3-8B-awq"  
+# =========================
+# Base / Full models
+# =========================
+LLAMA_3_8B_INSTRUCT="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/full/Llama-3.1-8B-Instruct"
+QWEN_2_5_7B_INSTRUCT="Qwen/Qwen2.5-7B-Instruct"
+PROMETHEUS="prometheus-eval/prometheus-7b-v2.0"
+
+# =========================
+# Distilled models
+# =========================
+LRC_1_5B_BASE="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/distilled/LRC-1.5B-Base"
+LRC_1_7B_BASE="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/distilled/LRC-1.7B-Base"
+LRC_4B_BASE="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/distilled/LRC-4B-Base"
+LRC_4B_SFT="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/distilled/LRC-4B-SFT"
+LLAMA_3_1_MINITRON_4B_DEPTH_BASE="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/distilled/Llama-3.1-Minitron-4B-Depth-Base"
+LLAMA_3_1_MINITRON_4B_DEPTH_IT="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/distilled/Llama-3.1-Minitron-4B-Depth-Chat"
+LLAMA_3_1_MINITRON_4B_WIDTH_BASE="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/distilled/Llama-3.1-Minitron-4B-Width-Base"
+LLAMA_3_1_MINITRON_4B_WIDTH_IT="rasyosef/Llama-3.1-Minitron-4B-Chat"
+BOOMERANG_QWEN3_4_9B="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/distilled/boomerang-qwen3-4.9B"
+
+# =========================
+# Pruned models
+# =========================
+LLAMA_3_8B_INSTRUCT_SPARSEGPT_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-sparsegpt-0.5"
+LLAMA_3_8B_INSTRUCT_SPARSEGPT_2_OUT_OF_4="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-sparsegpt-2-out-of-4"
+LLAMA_3_8B_INSTRUCT_WANDA_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-wanda-0.5"
+LLAMA_3_8B_INSTRUCT_WANDA_2_OUT_OF_4="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-wanda-2-out-of-4"
+LLAMA_3_3B_INSTRUCT_SPARSEGPT_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.2-3B-Instruct-sparsegpt-0.5"
+LLAMA_3_3B_INSTRUCT_WANDA_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.2-3B-Instruct-wanda-0.5"
+
+QWEN_2_5_7B_INSTRUCT_SPARSEGPT_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-7b-it-sparsegpt-0.5"
+QWEN_2_5_7B_INSTRUCT_SPARSEGPT_2_OUT_OF_4="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-7b-it-sparsegpt-2-out-of-4"
+QWEN_2_5_7B_INSTRUCT_WANDA_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-7b-it-wanda-0.5"
+QWEN_2_5_7B_INSTRUCT_WANDA_2_OUT_OF_4="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-7b-it-wanda-2-out-of-4"
+QWEN_2_5_3B_INSTRUCT_SPARSEGPT_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-3b-it-sparsegpt-0.5"
+QWEN_2_5_3B_INSTRUCT_WANDA_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-3b-it-wanda-0.5"
+
+# =========================
+# Quantized models
+# =========================
+LLAMA_3_8B_AWQ="hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4"
+LLAMA_3_8B_GPTQ="hugging-quants/Meta-Llama-3.1-8B-Instruct-GPTQ-INT4" 
+QWEN_2_5_7B_INSTRUCT_AWQ_INT4="Qwen/Qwen2.5-7B-Instruct-AWQ"
+QWEN_2_5_7B_INSTRUCT_GPTQ_INT4="Qwen/Qwen2.5-7B-Instruct-GPTQ-Int4"
+
+
+
+
+
+CURR_MODEL=$QWEN_2_5_7B_INSTRUCT_WANDA_2_OUT_OF_4
+echo "######################### Current Model ########################"
+echo "Current model: $CURR_MODEL"
+echo "################################################################"
 #/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-3-8b-SparseGPT-0.5
+
+
+###########################################
+# RELIABILITY
+###########################################
+
+conda activate trustllm
+python -u $CODE_DIR/TrustLLM/evaluate.py --model_name "$CURR_MODEL"
+
+### lighteval setup ###
+# conda activate light
+# export VLLM_USE_V1=0
+
+# lighteval vllm \
+#     "model_name=$CURR_MODEL" \
+#     "ifbench_test" 
+
+# lighteval vllm \
+#     "model_name=$CURR_MODEL" \
+#     "gsm8k|4" 
+
+# lighteval vllm \
+#     "model_name=$CURR_MODEL" \
+#     "math_500|4" 
+
+# lighteval vllm \
+#     "model_name=$CURR_MODEL" \
+#     "gpqa:diamond|5" 
+
+
 
 ####################### EVALUATION ########################
 # srun --tasks=1  --cpus-per-task=8 --nodes=1        --partition=h100-ferranti  --time=0-03:35     --gres=gpu:1    --mem=80G  --pty bash
@@ -118,11 +173,11 @@ export WANDB_MODE=disabled
 #     --num_fewshot 8 \
 #     --batch_size auto
 
-lm_eval --model hf \
-    --model_args "pretrained=$CHECKPOINT,device_map=auto" \
-    --tasks hendrycks_math \
-    --num_fewshot 4 \
-    --batch_size auto
+# lm_eval --model hf \
+#     --model_args "pretrained=$CHECKPOINT,device_map=auto" \
+#     --tasks hendrycks_math \
+#     --num_fewshot 4 \
+#     --batch_size auto
 
 # lm_eval \
 #   --model hf \

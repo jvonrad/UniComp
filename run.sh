@@ -4,7 +4,7 @@
 #SBATCH --ntasks-per-node=1           # ein Task (Prozess) pro GPU
 #SBATCH --cpus-per-task=8             # pro Prozess
 #SBATCH --partition=h100-ferranti
-#SBATCH --gres=gpu:0                  # vier GPUs
+#SBATCH --gres=gpu:1                  # vier GPUs
 #SBATCH --mem=80G                   # Gesamt-RAM (optional anpassen)
 #SBATCH --time=0-4:00:00             # z.B. 2 Tage
 #SBATCH --output=logs/distill.%j.out
@@ -75,19 +75,28 @@ QWEN_2_5_7B_INSTRUCT_GPTQ_INT4="Qwen/Qwen2.5-7B-Instruct-GPTQ-Int4"
 
 
 
-CURR_MODEL=$QWEN_2_5_7B_INSTRUCT_WANDA_2_OUT_OF_4
+#CURR_MODEL=$QWEN_2_5_7B_INSTRUCT_GPTQ_INT4
 echo "######################### Current Model ########################"
 echo "Current model: $CURR_MODEL"
 echo "################################################################"
 #/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-3-8b-SparseGPT-0.5
+
+###########################################
+# EFFICIENCY
+###########################################
+
+
+conda activate vllm
+vllm bench throughput   --model "Qwen/Qwen2.5-7B-Instruct-AWQ"    --dataset-name random   --input-len 32 --output-len 128
+vllm bench latency   --model "$CURR_MODEL" 
 
 
 ###########################################
 # RELIABILITY
 ###########################################
 
-conda activate trustllm
-python -u $CODE_DIR/TrustLLM/evaluate.py --model_name "$CURR_MODEL"
+# conda activate trustllm
+# python -u $CODE_DIR/TrustLLM/evaluate.py --model_name "$CURR_MODEL"
 
 ### lighteval setup ###
 # conda activate light
@@ -226,8 +235,7 @@ export WANDB_MODE=disabled
 # echo -e "\n AWQ quantization tasks completed \n"
 
 # rom 2
-
-# vllm bench throughput   --model "$CHECKPOINT"   --backend vllm   --dataset-name random   --input-len 32 --output-len 128   --num-prompts 1000   --max-num-batched-tokens 32768   --dtype auto    --seed 42   --output-json llama3-8b_w4a16.json
+  
 
 
 

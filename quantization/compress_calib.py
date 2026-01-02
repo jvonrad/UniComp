@@ -157,7 +157,7 @@ def build_save_dir(base_dir: str, model_id: str, dataset_tags, compression_metho
     tag_str = "-".join(dataset_tags)
     if not compression_method == "sparsegpt" and not compression_method == "wanda":
         mask_structure = ""
-    elif mask_structure == "2:4":
+    elif mask_structure == "0:0":
         mask_structure = "50"
     else:
         mask_structure = "2-out-of-4"
@@ -257,7 +257,7 @@ def main():
     elif args.compression_method == "sparsegpt":
         recipe = recipe_sparsegpt
     else:
-        SAVE_COMPRESSED = False
+        SAVE_COMPRESSED = True
         recipe = recipe_awq  # or handle other methods
 
     

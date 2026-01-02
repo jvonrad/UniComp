@@ -1,6 +1,15 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
+import transformers.activations as _activations
 import argparse
 from calflops import calculate_flops
+
+# Compatibility shim for AWQ on newer transformers where PytorchGELUTanh was removed
+if not hasattr(_activations, "PytorchGELUTanh"):
+    class PytorchGELUTanh(_activations.GELUActivation):
+        def __init__(self):
+            super().__init__(approximate="tanh")
+
+    _activations.PytorchGELUTanh = PytorchGELUTanh
 
 def main(args):
     # Load tokenizer - for Llama 3, use standard settings

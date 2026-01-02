@@ -21,6 +21,13 @@ from transformers import (
     AutoModelForCausalLM,
     Llama4ForConditionalGeneration,
 )
+# AWQ on recent transformers expects PytorchGELUTanh; add shim if missing.
+import transformers.activations as _activations
+if not hasattr(_activations, "PytorchGELUTanh"):
+    class PytorchGELUTanh(_activations.GELUActivation):
+        def __init__(self):
+            super().__init__(approximate="tanh")
+    _activations.PytorchGELUTanh = PytorchGELUTanh
 import os
 import numpy as np
 import onnxruntime as ort
@@ -244,4 +251,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

@@ -72,23 +72,37 @@ QWEN_2_5_7B_INSTRUCT_AWQ_INT4="Qwen/Qwen2.5-7B-Instruct-AWQ"
 QWEN_2_5_7B_INSTRUCT_GPTQ_INT4="Qwen/Qwen2.5-7B-Instruct-GPTQ-Int4"
 
 
+# =========================
+# Calibration Data Experiments
+# =========================
+LLAMA_3_8B_WANDA_50_REASONING="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-wanda-50-arc-gsm8k-math"
+LLAMA_3_8B_SPARSEGPT_50_REASONING="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-sparsegpt-50-arc-gsm8k-math-commonsenseqa"
+LLAMA_3_8B_SPARSEGPT_50_REASONING_WIKI="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-sparsegpt-50-arc-gsm8k-wiki"
 
 
 
-#CURR_MODEL=$QWEN_2_5_7B_INSTRUCT_GPTQ_INT4
+
+CURR_MODEL=$LLAMA_3_8B_SPARSEGPT_50_REASONING_WIKI
 echo "######################### Current Model ########################"
 echo "Current model: $CURR_MODEL"
 echo "################################################################"
-#/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-3-8b-SparseGPT-0.5
+
 
 ###########################################
 # EFFICIENCY
 ###########################################
 
+# --------- Hardware Acceleration ---------
+# conda activate vllm
+# vllm bench throughput   --model "$LLAMA_3_1_MINITRON_4B_WIDTH_IT"    --dataset-name random   --input-len 32 --output-len 128 --dtype float16
+# vllm bench latency   --model "$LLAMA_3_1_MINITRON_4B_WIDTH_IT" 
+# ## for LRC-4B-SFT use --model-impl transformers
 
-conda activate vllm
-vllm bench throughput   --model "Qwen/Qwen2.5-7B-Instruct-AWQ"    --dataset-name random   --input-len 32 --output-len 128
-vllm bench latency   --model "$CURR_MODEL" 
+# # --------- Inference Consumption ---------
+# conda activate thesis
+# python -u $CODE_DIR/Track_4/evaluate_flops.py --path $QWEN_2_5_7B_INSTRUCT_AWQ_INT4
+
+
 
 
 ###########################################
@@ -98,25 +112,30 @@ vllm bench latency   --model "$CURR_MODEL"
 # conda activate trustllm
 # python -u $CODE_DIR/TrustLLM/evaluate.py --model_name "$CURR_MODEL"
 
-### lighteval setup ###
-# conda activate light
-# export VLLM_USE_V1=0
+###########################################
+# PERFORMANCE
+###########################################
 
-# lighteval vllm \
-#     "model_name=$CURR_MODEL" \
-#     "ifbench_test" 
+# -------- Knowledge Benchmarks ---------
+# conda activate thesis
 
-# lighteval vllm \
-#     "model_name=$CURR_MODEL" \
-#     "gsm8k|4" 
+# lm_eval --model hf \
+#     --model_args "pretrained=$CURR_MODEL,device_map=auto,dtype=bfloat16" \
+#     --tasks mmlu,arc_challenge,arc_easy,hellaswag,piqa,winogrande \
+#     --batch_size auto \
+# 	--apply_chat_template
 
-# lighteval vllm \
-#     "model_name=$CURR_MODEL" \
-#     "math_500|4" 
+# -------- Reasoning Benchmarks ---------
+conda activate light
+export VLLM_USE_V1=0
 
-# lighteval vllm \
-#     "model_name=$CURR_MODEL" \
-#     "gpqa:diamond|5" 
+lighteval vllm "model_name=$CURR_MODEL" "gsm8k|4" 
+
+lighteval vllm "model_name=$CURR_MODEL" "math_500|4" 
+
+lighteval vllm "model_name=$CURR_MODEL" "gpqa:diamond|5" 
+
+lighteval vllm "model_name=$CURR_MODEL" "ifbench_test" 
 
 
 
@@ -128,16 +147,14 @@ vllm bench latency   --model "$CURR_MODEL"
 
 # # # Run WIKI evaluator
 # srun python -u $CODE_DIR/evaluate_wiki2.py \
-#      --path  "$CHECKPOINT" \
 #      --batch_size 1 \
-#      --max_len 4096  
+#      --max_len 4096  \
+# 	 --path  "$CHECKPOINT" 
 
 # python investigate_layer_importance.py \
 #   --dtype bfloat16 \
 #   --device cuda
 
-
-# python -u $CODE_DIR/Track_4/evaluate_flops.py --path $CHECKPOINT
 
 # srun python -u $CODE_DIR/Track_6/evaluate_tQA.py \
 #      --path  $CHECKPOINT 
@@ -157,10 +174,10 @@ vllm bench latency   --model "$CURR_MODEL"
 # python $CODE_DIR/quantization/quantize_awq.py
 
 # ######################## PRUNING #########################
-export WANDB_MODE=disabled
+# export WANDB_MODE=disabled
 
 # srun python -u  $CODE_DIR/pruning/wanda/main.py \
-#   --model "$LLAMA_3_8B" \
+#   --model "$LLAMA_3_8B_INSTRUCT" \
 #   --prune_method sparsegpt \
 #   --sparsity_ratio 0.5 \
 #   --sparsity_type unstructured \

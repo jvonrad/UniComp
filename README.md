@@ -28,6 +28,7 @@ Add target model to config.py --> model_map "/path/to/target/model: model_name" 
 
 Serve Model via vLLM on GPU: 
 > conda activate vllm
+
 > vllm serve "/path/to/target/model" \
 > --host 0.0.0.0 \
 > --port 8000 \

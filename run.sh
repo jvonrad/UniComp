@@ -6,7 +6,7 @@
 #SBATCH --partition=h100-ferranti
 #SBATCH --gres=gpu:1                  # vier GPUs
 #SBATCH --mem=80G                   # Gesamt-RAM (optional anpassen)
-#SBATCH --time=0-4:00:00             # z.B. 2 Tage
+#SBATCH --time=0-16:00:00             # z.B. 2 Tage
 #SBATCH --output=logs/distill.%j.out
 #SBATCH --error=logs/distill.%j.err
 #SBATCH --mail-user=jonathan.sakouhi@gmail.com
@@ -29,6 +29,7 @@ MODEL_DIR="/home/geiger/gwb082/LLMs"
 # =========================
 # Base / Full models
 # =========================
+LLAMA_3_8B="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/full/Llama-3.1-8B"
 LLAMA_3_8B_INSTRUCT="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/full/Llama-3.1-8B-Instruct"
 QWEN_2_5_7B_INSTRUCT="Qwen/Qwen2.5-7B-Instruct"
 PROMETHEUS="prometheus-eval/prometheus-7b-v2.0"
@@ -49,17 +50,21 @@ BOOMERANG_QWEN3_4_9B="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/dis
 # =========================
 # Pruned models
 # =========================
-LLAMA_3_8B_INSTRUCT_SPARSEGPT_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-sparsegpt-0.5"
-LLAMA_3_8B_INSTRUCT_SPARSEGPT_2_OUT_OF_4="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-sparsegpt-2-out-of-4"
 LLAMA_3_8B_INSTRUCT_WANDA_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-wanda-0.5"
 LLAMA_3_8B_INSTRUCT_WANDA_2_OUT_OF_4="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-wanda-2-out-of-4"
+LLAMA_3_8B_VLLM_WANDA_2_OUT_OF_4="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Meta-Llama-3-8B-InstructWANDA-2of4-W8A8-FP8-Dynamic"
+LLAMA_3_8B_INSTRUCT_SPARSEGPT_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-sparsegpt-0.5"
+LLAMA_3_8B_INSTRUCT_SPARSEGPT_2_OUT_OF_4="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-sparsegpt-2-out-of-4"
+LLAMA_3_8B_VLLM_SPARSEGPT_2_OUT_OF_4="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Meta-Llama-3-8B-Instruct2of4-W8A8-FP8-Dynamic-Per-Token"
 LLAMA_3_3B_INSTRUCT_SPARSEGPT_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.2-3B-Instruct-sparsegpt-0.5"
 LLAMA_3_3B_INSTRUCT_WANDA_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.2-3B-Instruct-wanda-0.5"
 
-QWEN_2_5_7B_INSTRUCT_SPARSEGPT_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-7b-it-sparsegpt-0.5"
-QWEN_2_5_7B_INSTRUCT_SPARSEGPT_2_OUT_OF_4="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-7b-it-sparsegpt-2-out-of-4"
 QWEN_2_5_7B_INSTRUCT_WANDA_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-7b-it-wanda-0.5"
 QWEN_2_5_7B_INSTRUCT_WANDA_2_OUT_OF_4="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-7b-it-wanda-2-out-of-4"
+QWEN_2_5_7B_INSTRUCT_VLLM_WANDA_2_OUT_OF_4="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Qwen2.5-7B-InstructWANDA-2of4-W8A8-FP8-Dynamic"
+QWEN_2_5_7B_INSTRUCT_SPARSEGPT_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-7b-it-sparsegpt-0.5"
+QWEN_2_5_7B_INSTRUCT_SPARSEGPT_2_OUT_OF_4="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-7b-it-sparsegpt-2-out-of-4"
+QWEN_2_5_7B_INSTRUCT_VLLM_SPARSEGPT_2_OUT_OF_4="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Qwen2.5-7B-InstructSPARSEGPT-2of4-W8A8-FP8-Dynamic"
 QWEN_2_5_3B_INSTRUCT_SPARSEGPT_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-3b-it-sparsegpt-0.5"
 QWEN_2_5_3B_INSTRUCT_WANDA_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-3b-it-wanda-0.5"
 
@@ -68,24 +73,139 @@ QWEN_2_5_3B_INSTRUCT_WANDA_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-m
 # =========================
 LLAMA_3_8B_AWQ="hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4"
 LLAMA_3_8B_GPTQ="hugging-quants/Meta-Llama-3.1-8B-Instruct-GPTQ-INT4" 
+
+LLAMA_3_8B_INT8="/home/geiger/gwb082/Jonathans_Thesis/LLMCBench/llm-compressor/examples/quantization_w8a8_fp8/Llama-3.1-8B-Instruct-FP8-Dynamic"
 QWEN_2_5_7B_INSTRUCT_AWQ_INT4="Qwen/Qwen2.5-7B-Instruct-AWQ"
 QWEN_2_5_7B_INSTRUCT_GPTQ_INT4="Qwen/Qwen2.5-7B-Instruct-GPTQ-Int4"
+
+
+
 
 
 # =========================
 # Calibration Data Experiments
 # =========================
 LLAMA_3_8B_WANDA_50_REASONING="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-wanda-50-arc-gsm8k-math"
-LLAMA_3_8B_SPARSEGPT_50_REASONING="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-sparsegpt-50-arc-gsm8k-math-commonsenseqa"
+LLAMA_3_8B_WANDA_2_OUT_OF_4_REASONING="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-wanda-2-out-of-4-arc-gsm8k-math"
+LLAMA_3_8B_SPARSEGPT_50_REASONING="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-sparsegpt-50-arc-gsm8k-math"
 LLAMA_3_8B_SPARSEGPT_50_REASONING_WIKI="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.1-8B-Instruct-sparsegpt-50-arc-gsm8k-wiki"
+LLAMA_3_8B_AWQ_REASONING="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/quantized/Llama-3.1-8B-Instruct-awq--arc-gsm8k-math"
+
+QWEN_2_5_7B_SPARSEGPT_50_REASONING="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Qwen2.5-7B-Instruct-sparsegpt-50-arc-gsm8k-math"
+QWEN_2_5_7B_AWQ_REASONING="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/quantized/Qwen2.5-7B-Instruct-awq--arc-gsm8k-math"
+
+# ====================
+# LLAMA 3.2 3B models
+# ====================
+LLAMA_3_3B_INSTRUCT="meta-llama/Llama-3.2-3B-Instruct"
+LLAMA_3_3B_INSTRUCT_SPARSEGPT_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.2-3B-Instruct-sparsegpt-0.5"
+LLAMA_3_3B_INSTRUCT_WANDA_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.2-3B-Instruct-wanda-0.5"
+LLAMA_3_3B_INSTRUCT_GPTQ_INT4="clowman/Llama-3.2-3B-Instruct-GPTQ-Int4"
+LLAMA_3_3B_INSTRUCT_AWQ_INT4="clowman/Llama-3.2-3B-Instruct-AWQ-Int4" # needs transformers <= 4.54.0 bc of AutoAWQ compatiability
+BOOMERANG_1_9B="JitaiHao/LRC-1.5B-SFT"
+
+
+# ====================
+# Qwen 2.5 3B models
+# ====================
+QWEN_2_5_3B_INSTRUCT="Qwen/Qwen2.5-3B-Instruct"
+QWEN_2_5_3B_INSTRUCT_GPTQ_INT4="Qwen/Qwen2.5-3B-Instruct-GPTQ-Int4"
+QWEN_2_5_3B_INSTRUCT_AWQ_INT4="Qwen/Qwen2.5-3B-Instruct-AWQ" # needs transformers <= 4.54.0 bc of AutoAWQ compatiability
+QWEN_2_5_3B_INSTRUCT_SPARSEGPT_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-3b-it-sparsegpt-0.5"
+QWEN_2_5_3B_INSTRUCT_WANDA_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-3b-it-wanda-0.5"
+LRC_1_7B_INSTRUCT="JitaiHao/LRC-1.7B-SFT"
 
 
 
+export CURR_MODEL="meta-llama/Llama-3.2-3B-Instruct"
 
-CURR_MODEL=$LLAMA_3_8B_SPARSEGPT_50_REASONING_WIKI
 echo "######################### Current Model ########################"
 echo "Current model: $CURR_MODEL"
 echo "################################################################"
+
+
+###########################################
+# PERFORMANCE
+###########################################
+
+# -------- Knowledge Benchmarks ---------
+# conda activate thesis
+
+# lm_eval --model hf \
+#     --model_args "pretrained=$CURR_MODEL,device_map=auto" \
+#     --tasks mmlu,arc_challenge,arc_easy,hellaswag,piqa,winogrande \
+#     --batch_size auto #\
+	#--apply_chat_template
+
+# mmlu,arc_challenge,arc_easy,hellaswag,piqa,winogrande \
+# for gptq model add. ,gptqmodel=True
+
+# -------- Reasoning Benchmarks ---------
+# conda activate light
+# export VLLM_USE_V1=0
+# export LIGHTEVAL_CONFIG="model_name=$CURR_MODEL,max_model_length=8192,max_num_batched_tokens=8192"
+
+# For LRC models use and change vllm to accelerate:
+# conda activate light
+# export LIGHTEVAL_CONFIG="model_name=$CURR_MODEL"
+# # # #lighteval eval "$LIGHTEVAL_CONFIG" "gsm8k|4" 
+
+# # lighteval eval "$LIGHTEVAL_CONFIG" "gsm8k|4" 
+# lighteval accelerate "$LIGHTEVAL_CONFIG" "math_500|4" 
+# lighteval accelerate "$LIGHTEVAL_CONFIG" "gpqa:diamond|5" 
+
+# for qwen2.5 models add
+# ,max_model_length=8192,max_num_batched_tokens=8192
+
+# ---------- Instruction Following ----------
+conda activate light
+export VLLM_USE_V1=0
+export LIGHTEVAL_CONFIG="model_name=$CURR_MODEL,max_model_length=8192,max_num_batched_tokens=8192"
+lighteval vllm "$LIGHTEVAL_CONFIG" "ifbench_test" --remove-reasoning-tags
+#,generation_parameters={max_new_tokens=512}
+# For LRC models use:
+# conda activate light
+# export LIGHTEVAL_CONFIG="model_name=$CURR_MODEL"
+# lighteval accelerate "$LIGHTEVAL_CONFIG" "ifbench_test" 
+
+## For LRC models add: --model-impl transformers
+
+# -------- Multilingual Capabilities ----------
+## for wanda 2:4 model add max_new_tokens:16,temperature:0
+
+# # GLOBAL MMLU
+# # # High-Resource + Latin Script
+# conda activate thesis
+
+# lm_eval --model hf \
+#     --model_args "pretrained=$CURR_MODEL,device_map=auto,dtype=bfloat16" \
+#     --tasks bbq \
+#     --batch_size auto 
+
+# # High Resource + Latin Script
+# lm_eval --model hf \
+#   --model_args "pretrained=$CURR_MODEL,device_map=auto,dtype=bfloat16" \
+#   --tasks global_mmlu_en,global_mmlu_de,global_mmlu_fr,global_mmlu_es,global_mmlu_pt,global_mmlu_it \
+#   --batch_size auto 
+
+# # # High-Resource + Non-Latin Script
+# lm_eval --model hf \
+#   --model_args "pretrained=$CURR_MODEL,device_map=auto,dtype=bfloat16" \
+#   --tasks global_mmlu_ar,global_mmlu_hi,global_mmlu_ja,global_mmlu_zh \
+#   --batch_size auto 
+
+# # Low-Resource + Latin Script
+# lm_eval --model hf \
+#   --model_args "pretrained=$CURR_MODEL,device_map=auto,dtype=bfloat16" \
+#   --tasks global_mmlu_sw,global_mmlu_yo,global_mmlu_bn,global_mmlu_id \
+#   --batch_size auto 
+
+# # Low-Resource + Non-Latin Script
+# lm_eval --model hf \
+#   --model_args "pretrained=$CURR_MODEL,device_map=auto,dtype=bfloat16" \
+#   --tasks global_mmlu_ko \
+#   --batch_size auto 
+
 
 
 ###########################################
@@ -93,9 +213,9 @@ echo "################################################################"
 ###########################################
 
 # --------- Hardware Acceleration ---------
-# conda activate vllm
-# vllm bench throughput   --model "$LLAMA_3_1_MINITRON_4B_WIDTH_IT"    --dataset-name random   --input-len 32 --output-len 128 --dtype float16
-# vllm bench latency   --model "$LLAMA_3_1_MINITRON_4B_WIDTH_IT" 
+# conda activate light
+#vllm bench throughput   --model "Qwen/Qwen2.5-7B-Instruct-GPTQ-Int4"    --dataset-name random   --input-len 1024 --output-len 16 
+#vllm bench latency   --model "/home/geiger/gwb082/Jonathans_Thesis/compressed-models/distilled/LRC-4B-SFT" --model-impl transformers
 # ## for LRC-4B-SFT use --model-impl transformers
 
 # # --------- Inference Consumption ---------
@@ -113,30 +233,18 @@ echo "################################################################"
 # python -u $CODE_DIR/TrustLLM/evaluate.py --model_name "$CURR_MODEL"
 
 ###########################################
-# PERFORMANCE
+# Calibration Data Experiments
 ###########################################
 
-# -------- Knowledge Benchmarks ---------
-# conda activate thesis
+# python ./quantization/compress_calib.py --model "allenai/OLMoE-1B-7B-0924-Instruct" --compression_method "awq"
 
-# lm_eval --model hf \
-#     --model_args "pretrained=$CURR_MODEL,device_map=auto,dtype=bfloat16" \
-#     --tasks mmlu,arc_challenge,arc_easy,hellaswag,piqa,winogrande \
-#     --batch_size auto \
-# 	--apply_chat_template
 
-# -------- Reasoning Benchmarks ---------
-conda activate light
-export VLLM_USE_V1=0
+###########################################
+# COMPRESSION
+###########################################
 
-lighteval vllm "model_name=$CURR_MODEL" "gsm8k|4" 
-
-lighteval vllm "model_name=$CURR_MODEL" "math_500|4" 
-
-lighteval vllm "model_name=$CURR_MODEL" "gpqa:diamond|5" 
-
-lighteval vllm "model_name=$CURR_MODEL" "ifbench_test" 
-
+## Compress Model with Sparse 2 of 4, so hardware acceleration possible needs fp8 (for vllm < 0.13.0)
+#python $CODE_DIR/llm-compressor/examples/sparse_2of4_quantization_fp8/llama3_8b_2of4.py --fp8 
 
 
 ####################### EVALUATION ########################
@@ -146,10 +254,12 @@ lighteval vllm "model_name=$CURR_MODEL" "ifbench_test"
 # srun python $CODE_DIR/finetune_wiki2.py
 
 # # # Run WIKI evaluator
-# srun python -u $CODE_DIR/evaluate_wiki2.py \
+# conda activate thesis
+
+# srun python -u ./evaluate_wiki2.py \
 #      --batch_size 1 \
 #      --max_len 4096  \
-# 	 --path  "$CHECKPOINT" 
+# 	 --path  "mistralai/Mixtral-8x7B-Instruct-v0.1" 
 
 # python investigate_layer_importance.py \
 #   --dtype bfloat16 \
@@ -163,28 +273,25 @@ lighteval vllm "model_name=$CURR_MODEL" "ifbench_test"
 
 # ############### GTPQ QUANTIZATION ########################
 
-# python $CODE_DIR/quantization/gptq.py \
-#   --model_path $QWEN_3_8B_BASE \
-#   --output_dir "/home/geiger/gwb082/Jonathans_Thesis/compressed-models/quantized/qwen3_8b_gptq4bit" \
-#   --bits 4 \
-#   --wandb_project      llama-distillation \
-#   --wandb_entity       jonathan-von-rad \
-#   --wandb_run_name     "qwen_gptq_memory_test" 
+# python ./quantization/gptq.py \
+#   --model_path "/home/geiger/gwb082/Jonathans_Thesis/compressed-models/full/Llama-3.1-8B" \
+#   --output_dir "/home/geiger/gwb082/Jonathans_Thesis/compressed-models/quantized/qwen3_8b_gptq8bit" \
+#   --bits 8 
 
 # python $CODE_DIR/quantization/quantize_awq.py
 
 # ######################## PRUNING #########################
-# export WANDB_MODE=disabled
+export WANDB_MODE=disabled
 
-# srun python -u  $CODE_DIR/pruning/wanda/main.py \
-#   --model "$LLAMA_3_8B_INSTRUCT" \
+# srun python -u  ./pruning/wanda/main.py \
+#   --model "meta-llama/Llama-3.2-3B-Instruct" \
 #   --prune_method sparsegpt \
 #   --sparsity_ratio 0.5 \
-#   --sparsity_type unstructured \
-#   --save /home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/llama-3-8b-sparsegpt-0.5_mixed/logs \
-#   --save_model /home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/llama-3-8b-sparsegpt-0.5_mixed \
-#   --wandb_run_name "llama-3-8b-it-sparsegpt-0.5_test_gpu??" \
-#   --calib_dataset mixed_reasoning
+#   --sparsity_type 2:4 \
+#   --save /home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.2-3B-Instruct-sparsegpt-2-of-4/logs \
+#   --save_model /home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/Llama-3.2-3B-Instruct-sparsegpt-2-of-4 \
+#   --wandb_run_name "Llama-3.2-3B-Instruct-sparsegpt-0.5_test_gpu??" \
+#   --calib_dataset c4
 
 
 # ######################## LM_EVAL_HARNESS #########################
@@ -218,131 +325,3 @@ lighteval vllm "model_name=$CURR_MODEL" "ifbench_test"
 
   
 
-
-
-
-# ##################### AWQ QUANTIZATION ########################
-
-# QUANTIZE_MODEL="$QWEN_3_8B_BASE"  # Change this to the model you want to quantize
-# WBIT=4
-# QGROUP_SIZE=128
-# SAVE_PATH="quant_cache/qwen-3-8b-base-w$WBIT-g$QGROUP_SIZE-awq"
-
-
-# cd $CODE_DIR/quantization/llm-awq/awq
-# python -m awq.entry --model_path "$QUANTIZE_MODEL" \
-#     --w_bit "$WBIT" --q_group_size "$QGROUP_SIZE" \
-#     --run_awq --dump_awq "awq_cache/qwen-3-8b-base-w$WBIT-g$QGROUP_SIZE.pt"
-
-# echo -e "\n AWQ quantization completed for $QUANTIZE_MODEL model with $WBIT bits and $QGROUP_SIZE group size.\n"
-
-# mkdir quant_cache
-# python -m awq.entry --model_path "$QUANTIZE_MODEL" \
-#     --w_bit "$WBIT" --q_group_size "$QGROUP_SIZE" \
-#     --load_awq "awq_cache/qwen-3-8b-base-w$WBIT-g$QGROUP_SIZE.pt" \
-#     --q_backend real --dump_quant "$SAVE_PATH"
-
-# echo -e "\n AWQ quantization cache created and model_state_dict saved at $SAVE_PATH. \n"
-
-# python -m awq.entry --model_path "$QUANTIZE_MODEL" \
-#     --tasks gsm8k \
-#     --w_bit "$WBIT" --q_group_size "$QGROUP_SIZE" \
-#     --load_quant "$SAVE_PATH"  
-
-# echo -e "\n AWQ quantization tasks completed \n"
-
-# rom 2
-  
-
-
-
-
-
-
-#################### Teacher Correction ######################
-
-# python $CODE_DIR/distillation/teacher_correction.py \
-#   --checkpoint $LLAMA_3_8B \
-#   --out_dir    ./llama_3_1_8b_pile_finetuned_1B \
-#   --batch_size 2 \
-#   --acc_steps  8
-
-
-############### Distillation #######################
-
-
-# ─── Edit only these three ────────────────────────────────────────────
-
-LR=5e-5
-ALPHA=1
-SEQ_LEN=1024
-LAYER_RATIO=0.5
-WIKI_PCT=25
-# # # # # # ─────────────────────────────────────────────────────────────────────
-
-
-
-# # # # # # # Der Rest passt sich automatisch an
-# RUN_NAME="llama-3-8b-distill-on-wiki${WIKI_PCT}pct_exponential_alpha${ALPHA}"
-# OUTPUT_DIR="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/distilled/${RUN_NAME}"
-
-# echo "=== Starte Distillation von LLAMA-3-8B ==="
-# echo "  Teacher:   LLAMA-3-8B"
-# echo "  Output:    ${OUTPUT_DIR}"
-# echo "  Run name:  ${RUN_NAME}"
-# echo "=================================================="
-# echo
-
-# srun torchrun \
-#   --nnodes=1 \
-#   --nproc_per_node=1 \
-#   --master_port=29501 \
-#   /home/geiger/gwb082/Jonathans_Thesis/LLMCBench/distillation/distill_llama_student.py \
-#     --teacher_path       "$LLAMA_3_8B" \
-#     --output_dir         "${OUTPUT_DIR}" \
-#     --layer_ratio       "${LAYER_RATIO}" \
-#     --dataset_name       wikipedia \
-#     --dataset_config     20220301.en \
-#     --wiki_pct           "${WIKI_PCT}" \
-#     --warmup_steps       40 \
-#     --max_seq_length     "${SEQ_LEN}" \
-#     --per_device_train_batch_size 4 \
-#     --per_device_eval_batch_size 1 \
-#     --gradient_accumulation_steps 8\
-#     --learning_rate      "${LR}" \
-#     --num_train_epochs   3 \
-#     --temperature        2.0 \
-#     --alpha_distill      "${ALPHA}" \
-#     --wandb_project      llama-distillation \
-#     --wandb_entity       jonathan-von-rad \
-#     --wandb_run_name     "${RUN_NAME}" 
-
-
-
-
-
-########
-
-
-# torchrun --nproc_per_node=2 finetune.py \
-#   --base-path        $BASE_PATH \
-#   --model-path       /home/geiger/gwb082/LLMs/llama-3/llama-3.2-1b-hf \
-#   --teacher-model-path /home/geiger/gwb082/LLMs/llama-3/llama-3.1-8b-hf \
-#   --ckpt-name        llama3-1B \
-#   --teacher-ckpt-name llama3-8B \
-#   --model-type       llama \
-#   --teacher-model-fp16 \
-#   --model-parallel --model-parallel-size 4 \
-#   --gradient-checkpointing \
-#   --data-dir         $BASE_PATH/processed_data/dolly/full/llama3 \
-#   --batch-size       1 \
-#   --eval-batch-size  8 \
-#   --gradient-accumulation-steps 16 \
-#   --lr               1e-5 \
-#   --epochs           3 \
-#   --max-length       512 \
-#   --max-prompt-length 256 \
-#   --save             $BASE_PATH/results/llama3/train/minillm \
-#   --log-interval     10 \
-#   --eval-interval    200 \
-#   --deepspeed        --deepspeed_config $BASE_PATH/configs/deepspeed/ds_config_zero2_fp16.json

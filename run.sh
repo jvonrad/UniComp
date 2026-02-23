@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J distill_llama2_3b
+#SBATCH -J evaluate_unicomp
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1           # ein Task (Prozess) pro GPU
 #SBATCH --cpus-per-task=8             # pro Prozess
@@ -9,7 +9,7 @@
 #SBATCH --time=0-16:00:00             # z.B. 2 Tage
 #SBATCH --output=logs/distill.%j.out
 #SBATCH --error=logs/distill.%j.err
-#SBATCH --mail-user=jonathan.sakouhi@gmail.com
+#SBATCH --mail-user=xx
 #SBATCH --mail-type=END
 
 

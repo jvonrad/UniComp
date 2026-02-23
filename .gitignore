@@ -6,3 +6,12 @@ wandb
 quantization/__pycache__
 Track_6/__pycache__
 __pycache__
+
+# local repos / artifacts
+llm-compressor/
+vllm/
+llm_weights/
+results/
+wandb/
+*.log
+eval_res.json

@@ -9,7 +9,7 @@ import wandb
 from transformers import AutoModelForCausalLM, AutoTokenizer, GPTQConfig
 
 
-def quantize(model_path: str, output_dir: str, bits: int = 4, dataset: str = "c4"):
+def quantize(model_path: str, output_dir: str, bits: int = 8, dataset: str = "c4"):
     """Load a HF model, quantize it with GPTQ and track runtime + memory.
 
     Metrics are logged to Weights & Biases and printed to stdout.
@@ -69,7 +69,7 @@ def quantize(model_path: str, output_dir: str, bits: int = 4, dataset: str = "c4
     }
 
     # Log to W&B and stdout
-    wandb.log(metrics)
+    # wandb.log(metrics)
     print(
         f"Quantized {model_path} → {output_dir}\n"
         f"Duration: {duration_s:.2f}s | "
@@ -94,16 +94,16 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Initialise W&B
-    wandb.init(
-        project=args.wandb_project,
-        entity=args.wandb_entity,
-        name=args.wandb_run_name or "quantize_gptq",
-        config=vars(args),
-    )
+    # wandb.init(
+    #     project=args.wandb_project,
+    #     entity=args.wandb_entity,
+    #     name=args.wandb_run_name or "quantize_gptq",
+    #     config=vars(args),
+    # )
 
     # Run quantisation
     quantize(args.model_path, args.output_dir, bits=args.bits)
 
     
     # Finish W&B run explicitly (good practice for long jobs)
-    wandb.finish()
+    # wandb.finish()

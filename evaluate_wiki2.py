@@ -32,6 +32,7 @@ import os
 import numpy as np
 import onnxruntime as ort
 from transformers import AutoTokenizer
+from awq import AutoAWQForCausalLM
 from optimum.onnxruntime import ORTModelForCausalLM
 import wandb
 
@@ -106,6 +107,11 @@ def main() -> None:
     quant_cfg  = cfg.get("bnb_config")
     torch_dtype = None if cfg.get("quantize") else cfg["torch_dtype"]
 
+    is_awq = "-awq" in model_id.lower()
+    if is_awq:
+        # AWQ checkpoints expect FP16 kernels; avoid BF16 fallback which can yield NaNs.
+        torch_dtype = torch.float16
+
     is_llama4 = bool(re.match(r"^Llama-4-Scout", model_id))
     if is_llama4:
         model_cls = Llama4ForConditionalGeneration
@@ -123,6 +129,13 @@ def main() -> None:
             args.path,            # <- ONNX dir
             file_name="model.onnx",
             provider="CUDAExecutionProvider"
+        )
+    elif is_awq:
+        model = AutoAWQForCausalLM.from_quantized(
+            args.path,
+            device_map=device_map,
+            max_memory=max_mem,
+            trust_remote_code=True,
         )
     else:
         model_cls = Llama4ForConditionalGeneration if is_llama4 else AutoModelForCausalLM

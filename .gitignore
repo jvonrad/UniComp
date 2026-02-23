@@ -15,3 +15,20 @@ results/
 wandb/
 *.log
 eval_res.json
+
+# accidental CLI-arg files
+--api-key
+--dtype
+--host
+--port
+testtt
+
+# local run artifacts
+wandb/
+results/
+llm_weights/
+llm-compressor/
+vllm/
+*.log
+eval_res.json
+huggingface_evaluator.log

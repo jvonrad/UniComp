@@ -156,10 +156,13 @@ def build_save_dir(base_dir: str, model_id: str, dataset_tags, compression_metho
     model_name = model_id.rstrip("/").split("/")[-1]
     tag_str = "-".join(dataset_tags)
     if not compression_method == "sparsegpt" and not compression_method == "wanda":
+        print("Using AWQ quantization.")
         mask_structure = ""
     elif mask_structure == "0:0":
+        print("Using unstructured pruning.")
         mask_structure = "50"
     else:
+        print(f"Using structured pruning with mask structure: {mask_structure}")
         mask_structure = "2-out-of-4"
     save_dir = Path(base_dir) / f"{model_name}-{compression_method}-{mask_structure}-{tag_str}"
     os.makedirs(save_dir, exist_ok=True)
@@ -219,7 +222,7 @@ def main():
 
     # 3. Build save dir
     save_dir = build_save_dir(base_dir, MODEL_ID, DATASET_TAGS, args.compression_method, mask_structure)
-    print(f"Saving quantized model to: {save_dir}")
+    print(f"Saving compressed model to: {save_dir}")
 
     # 4. COMPRESSION
     
@@ -237,7 +240,8 @@ def main():
             sparsity=0.5,# 50% weights zeroed
             mask_structure=mask_structure,
             targets=["Linear"],    # prune Linear layers
-            ignore=["lm_head"],    # usually keep output head dense
+            ignore=['re:.*lm_head'],
+            sequential_update=True,# usually keep output head dense
         )
     ]
 
@@ -246,8 +250,8 @@ def main():
             sparsity=0.5,              # 50% zeros
             # SparseGPT expects mask_structure as "N:M" string; "0:0" means unstructured.
             mask_structure=mask_structure,
-            targets=["Linear"],        # prune Linear layers
-            ignore=["lm_head"],        # often ignored
+            targets=[r"re:model.layers.\d*$"],        # prune Linear layers
+            ignore=['re:.*lm_head'],        # often ignored
             sequential_update=True,    # helps memory: prunes layer-by-layer
         )
     ]

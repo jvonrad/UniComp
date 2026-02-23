@@ -4,13 +4,13 @@ import torch
 import time
 import wandb
 
-wandb.init(
-    project="llama-distillation",
-    entity="jonathan-von-rad",
-    name="quantize_qwen3_awq"
-)
-model_id = "/home/geiger/gwb082/LLMs/Qwen/Qwen3-8B-Base"
-out_dir  = "/home/geiger/gwb082/Jonathans_Thesis/compressed-models/quantized/qwen-3-8b-awq4_test"
+# wandb.init(
+#     project="llama-distillation",
+#     entity="jonathan-von-rad",
+#     name="quantize_qwen3_awq"
+#)
+model_id = "deepseek-ai/deepseek-moe-16b-base"
+out_dir  = "/home/geiger/gwb082/Jonathans_Thesis/compressed-models/quantized/deepseek-moe-16b-awq4"
 device = torch.cuda.current_device()
 
 # load model in full precision first
@@ -19,7 +19,7 @@ model = AutoAWQForCausalLM.from_pretrained(
     torch_dtype="auto",
     device_map="auto",
     safetensors=True,
-    
+    trust_remote_code=True,
 )
 tokenizer = AutoTokenizer.from_pretrained(model_id, use_fast=False)
 

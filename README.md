@@ -1,6 +1,6 @@
 # UniComp: A Unified Evaluation of LLM Compression via Pruning, Quantization & Distillation
 
-![Summarized Results](./final-results.png)
+![Summarized Results](./main-figure.png)
 
 
  ### I. Evaluate Performance

@@ -6,7 +6,7 @@
 #SBATCH --partition=h100-ferranti
 #SBATCH --gres=gpu:1                  # vier GPUs
 #SBATCH --mem=80G                   # Gesamt-RAM (optional anpassen)
-#SBATCH --time=0-16:00:00             # z.B. 2 Tage
+#SBATCH --time=0-10:00:00             # z.B. 2 Tage
 #SBATCH --output=logs/distill.%j.out
 #SBATCH --error=logs/distill.%j.err
 #SBATCH --mail-user=xx
@@ -117,7 +117,7 @@ LRC_1_7B_INSTRUCT="JitaiHao/LRC-1.7B-SFT"
 
 
 
-export CURR_MODEL="meta-llama/Llama-3.2-3B-Instruct"
+export CURR_MODEL="allenai/OLMo-2-1124-7B"
 
 echo "######################### Current Model ########################"
 echo "Current model: $CURR_MODEL"
@@ -158,10 +158,10 @@ echo "################################################################"
 # ,max_model_length=8192,max_num_batched_tokens=8192
 
 # ---------- Instruction Following ----------
-conda activate light
-export VLLM_USE_V1=0
-export LIGHTEVAL_CONFIG="model_name=$CURR_MODEL,max_model_length=8192,max_num_batched_tokens=8192"
-lighteval vllm "$LIGHTEVAL_CONFIG" "ifbench_test" --remove-reasoning-tags
+# conda activate light
+# export VLLM_USE_V1=0
+# export LIGHTEVAL_CONFIG="model_name=$CURR_MODEL,max_model_length=8192,max_num_batched_tokens=8192"
+# lighteval vllm "$LIGHTEVAL_CONFIG" "ifbench_test" --remove-reasoning-tags
 #,generation_parameters={max_new_tokens=512}
 # For LRC models use:
 # conda activate light
@@ -172,6 +172,17 @@ lighteval vllm "$LIGHTEVAL_CONFIG" "ifbench_test" --remove-reasoning-tags
 
 # -------- Multilingual Capabilities ----------
 ## for wanda 2:4 model add max_new_tokens:16,temperature:0
+
+GLOBAL_1="global_mmlu_full_en,global_mmlu_full_es,global_mmlu_full_fr,global_mmlu_full_de"
+GLOBAL_2="global_mmlu_full_ru,global_mmlu_full_zh,global_mmlu_full_ja,global_mmlu_full_ar"
+GLOBAL_3="global_mmlu_full_sw,global_mmlu_full_bn,global_mmlu_full_te,global_mmlu_full_pt"
+
+lm_eval --model hf \
+	--model_args "pretrained=$CURR_MODEL,device_map=auto,dtype=bfloat16" \
+	--tasks $GLOBAL_2 \
+	--batch_size auto
+
+
 
 # # GLOBAL MMLU
 # # # High-Resource + Latin Script

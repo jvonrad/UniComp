@@ -2,7 +2,7 @@
 
 <img src="./main-figure.png" width="50%">
 
- ### I. Evaluate Performance
+## I. Evaluate Performance
 
 ### Setup
 conda create -n performance python=3.10

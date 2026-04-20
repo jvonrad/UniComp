@@ -109,19 +109,6 @@ case "$BENCH_KEY" in
       --batch_size auto
     ;;
 
-  reliability)
-    conda activate trustllm
-    python -u "$CODE_DIR/TrustLLM/evaluate.py" --model_name "$CURR_MODEL"
-    ;;
-
-  efficiency)
-    conda activate light
-    vllm bench throughput \
-      --model "$CURR_MODEL" \
-      --dataset-name random \
-      --input-len 1024 --output-len 16
-    ;;
-
   *)
     echo "Unknown benchmark: $BENCH_KEY"
     echo "Available: knowledge, reasoning, instruction, multilingual, reliability, efficiency"

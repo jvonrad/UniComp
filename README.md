@@ -11,6 +11,10 @@
 conda create -n performance python=3.10
 conda activate performance
 pip install -e . -r ./setup/requirements_performance.txt
+
+conda create -n light python=3.10
+conda activate light
+pip install -e . r ./setup/requirements_light.txt
 ```
 
 ### Run a single eval

@@ -1,6 +1,6 @@
 # UniComp: A Unified Evaluation of LLM Compression via Pruning, Quantization & Distillation
 
-<img src="./main-figure.png" width="50%">
+<img src="./figures/main-figure.png" width="50%">
 
 ---
 
@@ -10,7 +10,7 @@
 ```bash
 conda create -n performance python=3.10
 conda activate performance
-pip install -e . -r requirements.txt
+pip install -e . -r ./setup/requirements_performance.txt
 ```
 
 ### Run a single eval
@@ -33,11 +33,11 @@ bash sweep.sh
 ```bash
 conda create -n vllm python=3.10
 conda activate vllm
-pip install -r requirements_vllm.txt
+pip install -r ./setup/requirements_vllm.txt
 
 conda create -n trustllm python=3.10
 conda activate trustllm
-pip install -r requirements_trust.txt
+pip install -r ./setup/requirements_trust.txt
 ```
 
 ### Step 1 — Generate responses

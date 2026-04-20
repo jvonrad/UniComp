@@ -19,7 +19,7 @@ pip install -e . r ./setup/requirements_light.txt
 
 ### Run a single eval
 ```bash
-sbatch run_benchmark.sh llama_8b_wanda_50 knowledge
+sbatch run_performance.sh llama_8b_wanda_50 knowledge
 ```
 
 ### Reproduce all paper results
@@ -87,3 +87,10 @@ sbatch run.sh
 ```
 
 > Results are printed to stdout.
+
+
+##  III. Evaluate Efficiency
+
+```bash
+sbatch run_performance.sh
+```

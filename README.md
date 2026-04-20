@@ -5,10 +5,11 @@
 ## I. Evaluate Performance
 
 ### Setup
-conda create -n performance python=3.10
-conda activate performance
+```bash
+conda create -n performance python=3.10 
+conda activate performance 
 pip install -e . requirements.txt
-
+```
 
 ### Run a single eval
 sbatch run_benchmark.sh llama_8b_wanda_50 knowledge
@@ -26,13 +27,15 @@ Pruned models must be generated first — see compress/README.md
 ### 0. Setup 
 
 You will need two separate conda environments to serve the model and evaluate it:
-> conda create -n vllm python=3.10
-> conda activate vllm 
-> pip install -e requirements_vllm.txt
+```bash
+conda create -n vllm python=3.10
+conda activate vllm 
+pip install -e requirements_vllm.txt
 
 conda create -n trustllm python=3.10
 conda activate vllm 
 pip install -e requirements_trust.txt
+```
 
 ### 1. Generation
 > cd TrustLLM

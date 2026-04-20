@@ -5,6 +5,8 @@
  ### I. Evaluate Performance
 
 ### Setup
+conda create -n performance python=3.10
+conda activate performance
 pip install -e . requirements.txt
 
 
@@ -21,6 +23,16 @@ Pruned models must be generated first — see compress/README.md
 
 ## II. Evaluate Reliablity
 
+### 0. Setup 
+
+You will need two separate conda environments to serve the model and evaluate it:
+> conda create -n vllm python=3.10
+> conda activate vllm 
+> pip install -e requirements_vllm.txt
+
+conda create -n trustllm python=3.10
+conda activate vllm 
+pip install -e requirements_trust.txt
 
 ### 1. Generation
 > cd TrustLLM
@@ -42,7 +54,7 @@ Edit config.py --> openai_key="localtoken" and openai_api_base="http://localhost
 
 SSH to same Compute Node (any point where 0.0.0.0:8000 can be accessed) :
 > conda activate trustllm
-> python generate_all.
+> python generate_all.py
 
 ==> All generated responses will be stored in /UniCOMP/TrustLLM/generation_results/{current_model}"
 

@@ -53,7 +53,7 @@ cd TrustLLM
 ```
 
 1. Edit `generate_all.py` — set `MODEL_PATH` to your model path
-2. Register the model you want to evaluate in `trustllm_pkg/trustllm/config.py` — add `"/path/to/model": "model_name"` to `model_info/model_mapping` and append `"model_name"` to the `openai_model` array
+2. Register the model you want to evaluate in `trustllm_pkg/trustllm/config.py` — add `"/path/to/model": "model_name"` to `model_info/model_mapping` and append `"model_name"` to the `openai_model` array. (Don't forget to add a "," after the model name, since its JSON - speaking from experience)
 3. Serve the model on GPU:
 ```bash
 conda activate vllm

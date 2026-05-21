@@ -88,8 +88,7 @@ jsonschema-specifications==2025.9.1
 langcodes==3.5.1
 lark==1.2.2
 latex2sympy2_extended==1.0.6
-# Editable install with no version control (lighteval==0.13.1.dev0)
--e /weka/geiger/gwb082/Jonathans_Thesis/LLMCBench/lighteval
+lighteval==0.13.0
 linkify-it-py==2.0.3
 llguidance==0.7.30
 llvmlite==0.44.0

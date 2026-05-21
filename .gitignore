@@ -20,6 +20,7 @@ eval_res.json
 --host
 --port
 testtt
+.claude
 
 # local run artifacts
 wandb/

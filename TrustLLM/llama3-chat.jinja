@@ -1,0 +1,10 @@
+{%- for message in messages -%}
+{%- set role = message['role'] -%}
+{%- if role == 'user' -%}{%- set role = 'human' -%}{%- endif -%}
+{%- if role == 'assistant' -%}{%- set role = 'gpt' -%}{%- endif -%}
+{%- if role == 'system' -%}{%- set role = 'system' -%}{%- endif -%}
+{{ '<|im_start|>' + role + '\n' + message['content'] + '<|im_end|>\n' }}
+{%- endfor -%}
+{%- if add_generation_prompt -%}
+{{ '<|im_start|>gpt\n' }}
+{%- endif -%}

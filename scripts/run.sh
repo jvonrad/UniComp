@@ -6,7 +6,7 @@
 #SBATCH --partition=h100-ferranti
 #SBATCH --gres=gpu:1                  # vier GPUs
 #SBATCH --mem=80G                   # Gesamt-RAM (optional anpassen)
-#SBATCH --time=0-10:00:00             # z.B. 2 Tage
+#SBATCH --time=0-04:00:00             # z.B. 2 Tage
 #SBATCH --output=logs/distill.%j.out
 #SBATCH --error=logs/distill.%j.err
 #SBATCH --mail-user=xx
@@ -33,6 +33,7 @@ LLAMA_3_8B="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/full/Llama-3.
 LLAMA_3_8B_INSTRUCT="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/full/Llama-3.1-8B-Instruct"
 QWEN_2_5_7B_INSTRUCT="Qwen/Qwen2.5-7B-Instruct"
 PROMETHEUS="prometheus-eval/prometheus-7b-v2.0"
+
 
 # =========================
 # Distilled models
@@ -73,6 +74,7 @@ QWEN_2_5_3B_INSTRUCT_WANDA_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-m
 # =========================
 LLAMA_3_8B_AWQ="hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4"
 LLAMA_3_8B_GPTQ="hugging-quants/Meta-Llama-3.1-8B-Instruct-GPTQ-INT4" 
+LLAMA_3_8B_SMOOTHQUANT="/home/geiger/gwb082/Jonathans_Thesis/LLMCBench/llm-compressor/examples/quantization_w8a8_int8/Meta-Llama-3-8B-Instruct-W8A8-Dynamic-Per-Token"
 
 LLAMA_3_8B_INT8="/home/geiger/gwb082/Jonathans_Thesis/LLMCBench/llm-compressor/examples/quantization_w8a8_fp8/Llama-3.1-8B-Instruct-FP8-Dynamic"
 QWEN_2_5_7B_INSTRUCT_AWQ_INT4="Qwen/Qwen2.5-7B-Instruct-AWQ"
@@ -115,107 +117,105 @@ QWEN_2_5_3B_INSTRUCT_SPARSEGPT_50="/home/geiger/gwb082/Jonathans_Thesis/compress
 QWEN_2_5_3B_INSTRUCT_WANDA_50="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-3b-it-wanda-0.5"
 LRC_1_7B_INSTRUCT="JitaiHao/LRC-1.7B-SFT"
 
+# =========================
+# Quantized models
+# =========================
+LLAMA_3_8B_AWQ="hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4"
+LLAMA_3_8B_GPTQ="hugging-quants/Meta-Llama-3.1-8B-Instruct-GPTQ-INT4" 
+LLAMA_3_8B_SMOOTHQUANT="/home/geiger/gwb082/Jonathans_Thesis/LLMCBench/llm-compressor/examples/quantization_w8a8_int8/Meta-Llama-3-8B-Instruct-W8A8-Dynamic-Per-Token"
 
+LLAMA_3_8B_INT8="/home/geiger/gwb082/Jonathans_Thesis/LLMCBench/llm-compressor/examples/quantization_w8a8_fp8/Llama-3.1-8B-Instruct-FP8-Dynamic"
+QWEN_2_5_7B_INSTRUCT_AWQ_INT4="Qwen/Qwen2.5-7B-Instruct-AWQ"
+QWEN_2_5_7B_INSTRUCT_GPTQ_INT4="Qwen/Qwen2.5-7B-Instruct-GPTQ-Int4"
+QWEN_2_5_7B_INSTRUCT_SMOOTHQUANT="/home/geiger/gwb082/Jonathans_Thesis/compressed-models/quantized/Qwen2.5-7B-Instruct-W8A8-Dynamic-Per-Token"
 
-export CURR_MODEL="allenai/OLMo-2-1124-7B"
+QWEN_2_5_7B_INSTRUCT="Qwen/Qwen2.5-7B-Instruct"
+
+export CURR_MODEL=$QWEN_2_5_7B_INSTRUCT_SMOOTHQUANT
 
 echo "######################### Current Model ########################"
 echo "Current model: $CURR_MODEL"
 echo "################################################################"
 
 
+# conda activate vllm
+# python llm-compressor/examples/quantization_w8a8_int8/llama3_example.py
+
 ###########################################
 # PERFORMANCE
 ###########################################
 
 # -------- Knowledge Benchmarks ---------
-# conda activate thesis
+conda activate thesis
+export VLLM_ATTENTION_BACKEND=FLASH_ATTN
+export VLLM_NO_USAGE_STATS=1
+export VLLM_USE_V1=0
 
-# lm_eval --model hf \
-#     --model_args "pretrained=$CURR_MODEL,device_map=auto" \
-#     --tasks mmlu,arc_challenge,arc_easy,hellaswag,piqa,winogrande \
-#     --batch_size auto #\
-	#--apply_chat_template
+lm_eval --model vllm \
+    --model_args "pretrained=$CURR_MODEL,enforce_eager=True" \
+    --tasks mmlu,arc_challenge,arc_easy,hellaswag,piqa,winogrande \
+    --batch_size auto 
 
 # mmlu,arc_challenge,arc_easy,hellaswag,piqa,winogrande \
 # for gptq model add. ,gptqmodel=True
 
 # -------- Reasoning Benchmarks ---------
-# conda activate light
-# export VLLM_USE_V1=0
-# export LIGHTEVAL_CONFIG="model_name=$CURR_MODEL,max_model_length=8192,max_num_batched_tokens=8192"
+conda activate light
+export VLLM_USE_V1=0
+export LIGHTEVAL_CONFIG="model_name=$CURR_MODEL,max_model_length=8192,max_num_batched_tokens=8192,generation_parameters={max_new_tokens:4096}"
 
 # For LRC models use and change vllm to accelerate:
 # conda activate light
-# export LIGHTEVAL_CONFIG="model_name=$CURR_MODEL"
+#export LIGHTEVAL_CONFIG="model_name=/home/geiger/gwb082/Jonathans_Thesis/LLMCBench/llm-compressor/examples/quantization_w8a8_int8/Meta-Llama-3-8B-Instruct-W8A8-Dynamic-Per-Token"
 # # # #lighteval eval "$LIGHTEVAL_CONFIG" "gsm8k|4" 
 
-# # lighteval eval "$LIGHTEVAL_CONFIG" "gsm8k|4" 
-# lighteval accelerate "$LIGHTEVAL_CONFIG" "math_500|4" 
-# lighteval accelerate "$LIGHTEVAL_CONFIG" "gpqa:diamond|5" 
+lighteval vllm "$LIGHTEVAL_CONFIG" "gsm8k|4" 
+lighteval vllm "$LIGHTEVAL_CONFIG" "math_500|4" 
+lighteval vllm "$LIGHTEVAL_CONFIG" "gpqa:diamond|5" 
 
 # for qwen2.5 models add
 # ,max_model_length=8192,max_num_batched_tokens=8192
 
 # ---------- Instruction Following ----------
-# conda activate light
-# export VLLM_USE_V1=0
-# export LIGHTEVAL_CONFIG="model_name=$CURR_MODEL,max_model_length=8192,max_num_batched_tokens=8192"
-# lighteval vllm "$LIGHTEVAL_CONFIG" "ifbench_test" --remove-reasoning-tags
-#,generation_parameters={max_new_tokens=512}
+conda activate light
+export VLLM_USE_V1=0
+export LIGHTEVAL_CONFIG="model_name=$CURR_MODEL,max_model_length=8192,max_num_batched_tokens=8192"
+lighteval vllm "$LIGHTEVAL_CONFIG" "ifbench_test" --remove-reasoning-tags
+#,generation_parameters={max_new_tokens:512}
 # For LRC models use:
 # conda activate light
 # export LIGHTEVAL_CONFIG="model_name=$CURR_MODEL"
-# lighteval accelerate "$LIGHTEVAL_CONFIG" "ifbench_test" 
+lighteval accelerate "$LIGHTEVAL_CONFIG" "ifbench_test" 
 
 ## For LRC models add: --model-impl transformers
 
 # -------- Multilingual Capabilities ----------
 ## for wanda 2:4 model add max_new_tokens:16,temperature:0
 
-GLOBAL_1="global_mmlu_full_en,global_mmlu_full_es,global_mmlu_full_fr,global_mmlu_full_de"
-GLOBAL_2="global_mmlu_full_ru,global_mmlu_full_zh,global_mmlu_full_ja,global_mmlu_full_ar"
-GLOBAL_3="global_mmlu_full_sw,global_mmlu_full_bn,global_mmlu_full_te,global_mmlu_full_pt"
+GLOBAL_1="global_mmlu_en,global_mmlu_de,global_mmlu_fr,global_mmlu_es,global_mmlu_it"
+GLOBAL_2="global_mmlu_ar,global_mmlu_hi,global_mmlu_ja,global_mmlu_zh,global_mmlu_pt"
+GLOBAL_3="global_mmlu_sw,global_mmlu_yo,global_mmlu_bn,global_mmlu_id,global_mmlu_ko"
+conda activate thesis
+export VLLM_ATTENTION_BACKEND=FLASH_ATTN
+export VLLM_NO_USAGE_STATS=1
+export VLLM_USE_V1=0
 
-lm_eval --model hf \
-	--model_args "pretrained=$CURR_MODEL,device_map=auto,dtype=bfloat16" \
-	--tasks $GLOBAL_2 \
-	--batch_size auto
+# ------ GLOBAL MMLU ---------
+
+lm_eval --model vllm \
+	--model_args "pretrained=$CURR_MODEL,enforce_eager=True" \
+	--tasks $GLOBAL_3 \
+	--batch_size auto 
+
+# ------ BBQ ---------
+
+lm_eval --model vllm \
+    --model_args "pretrained=$CURR_MODEL,enforce_eager=True" \
+    --tasks bbq \
+    --batch_size auto \
+	--apply_chat_template
 
 
-
-# # GLOBAL MMLU
-# # # High-Resource + Latin Script
-# conda activate thesis
-
-# lm_eval --model hf \
-#     --model_args "pretrained=$CURR_MODEL,device_map=auto,dtype=bfloat16" \
-#     --tasks bbq \
-#     --batch_size auto 
-
-# # High Resource + Latin Script
-# lm_eval --model hf \
-#   --model_args "pretrained=$CURR_MODEL,device_map=auto,dtype=bfloat16" \
-#   --tasks global_mmlu_en,global_mmlu_de,global_mmlu_fr,global_mmlu_es,global_mmlu_pt,global_mmlu_it \
-#   --batch_size auto 
-
-# # # High-Resource + Non-Latin Script
-# lm_eval --model hf \
-#   --model_args "pretrained=$CURR_MODEL,device_map=auto,dtype=bfloat16" \
-#   --tasks global_mmlu_ar,global_mmlu_hi,global_mmlu_ja,global_mmlu_zh \
-#   --batch_size auto 
-
-# # Low-Resource + Latin Script
-# lm_eval --model hf \
-#   --model_args "pretrained=$CURR_MODEL,device_map=auto,dtype=bfloat16" \
-#   --tasks global_mmlu_sw,global_mmlu_yo,global_mmlu_bn,global_mmlu_id \
-#   --batch_size auto 
-
-# # Low-Resource + Non-Latin Script
-# lm_eval --model hf \
-#   --model_args "pretrained=$CURR_MODEL,device_map=auto,dtype=bfloat16" \
-#   --tasks global_mmlu_ko \
-#   --batch_size auto 
 
 
 
@@ -253,6 +253,20 @@ lm_eval --model hf \
 ###########################################
 # COMPRESSION
 ###########################################
+
+# -------------- SmoothQuant ---------------
+# CALIB_DATASET=/home/geiger/gwb082/Jonathans_Thesis/LLMCBench/quantization/smoothquant
+
+# Collect Activations
+
+# python examples/generate_act_scales.py \
+#   --model-name meta-llama/Llama-2-7b-hf \
+#   --output-path act_scales/llama-2-7b.pt \
+#   --num-samples 512 \
+#   --seq-len 512 \
+#   --dataset-path /path/to/calibration_dataset
+
+
 
 ## Compress Model with Sparse 2 of 4, so hardware acceleration possible needs fp8 (for vllm < 0.13.0)
 #python $CODE_DIR/llm-compressor/examples/sparse_2of4_quantization_fp8/llama3_8b_2of4.py --fp8 
@@ -335,4 +349,3 @@ export WANDB_MODE=disabled
 
 
   
-

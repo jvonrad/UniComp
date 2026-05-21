@@ -33,6 +33,8 @@ bash sweep.sh
 
 ## II. Evaluate Reliability
 
+> The general process works as follows: First, you serve the model you want to evaluate via vLLM and let it generate responses to all benchmark questions, which are saved in JSON. Then, you use a LLM-as-judge to check the generated answers and score them (using the gold-answer already provided in the datasets).
+
 ### Setup — two environments required
 ```bash
 conda create -n vllm python=3.10

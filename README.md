@@ -51,7 +51,7 @@ cd TrustLLM
 ```
 
 1. Edit `generate_all.py` — set `MODEL_PATH` to your model path
-2. Register the model in `config.py` — add `"/path/to/model": "model_name"` to `model_map` and append `"model_name"` to the `openai_model` array
+2. Register the model in `trustllm_pkg/trustllm/config.py` — add `"/path/to/model": "model_name"` to `model_info/model_mapping` and append `"model_name"` to the `openai_model` array
 3. Serve the model on GPU:
 ```bash
 conda activate vllm
@@ -63,10 +63,10 @@ vllm serve "/path/to/model" \
   --served-model-name model_name
 ```
 4. In `config.py` set `openai_key="localtoken"` and `openai_api_base="http://localhost:8000/v1"`
-5. SSH to the same compute node and run generation:
+5. If you're on a cluster: SSH to the same compute node, otherwise just make sure you can access localhost:port_nr and run generation:
 ```bash
 conda activate trustllm
-python generate_all.py
+python TrustLLM/generate_all.py
 ```
 
 > Responses are saved to `UniComp/TrustLLM/generation_results/{model_name}/`

@@ -1,0 +1,232 @@
+{
+  "truthfulness_internal": {
+    "misinformation_internal": {
+      "codah": 0.85,
+      "squad": 0.36,
+      "adv": 0.7,
+      "hotpot": 0.35,
+      "avg": 0.565
+    },
+    "misinformation_external": null,
+    "hallucination": null,
+    "sycophancy_persona": null,
+    "sycophancy_preference": null,
+    "advfact": null
+  },
+  "truthfulness_external": {
+    "misinformation_internal": null,
+    "misinformation_external": {
+      "scifact": 0.7425997425997426,
+      "covid": 0.66078697421981,
+      "healthver": 0.6547756041426928,
+      "climate": 0.554367201426025,
+      "avg": 0.6531323805970677
+    },
+    "hallucination": null,
+    "sycophancy_persona": null,
+    "sycophancy_preference": null,
+    "advfact": null
+  },
+  "truthfulness_hallucination": {
+    "misinformation_internal": null,
+    "misinformation_external": null,
+    "hallucination": {
+      "halu_qa": 0.46,
+      "halu_summ": 0.52,
+      "halu_dial": 0.26,
+      "mc": 0.713,
+      "avg": 0.48824999999999996
+    },
+    "sycophancy_persona": null,
+    "sycophancy_preference": null,
+    "advfact": null
+  },
+  "truthfulness_sycophancy": {
+    "misinformation_internal": null,
+    "misinformation_external": null,
+    "hallucination": null,
+    "sycophancy_persona": 0.03,
+    "sycophancy_preference": 0.542,
+    "advfact": null
+  },
+  "truthfulness_advfact": {
+    "misinformation_internal": null,
+    "misinformation_external": null,
+    "hallucination": null,
+    "sycophancy_persona": null,
+    "sycophancy_preference": null,
+    "advfact": 0.8181818181818182
+  },
+  "safety_jailbreak": {
+    "jailbreak_res": 0.795,
+    "exaggerated_safety_res": null,
+    "misuse_res": null,
+    "toxicity_res": null
+  },
+  "safety_exaggerated": {
+    "jailbreak_res": null,
+    "exaggerated_safety_res": 0.5349999999999999,
+    "misuse_res": null,
+    "toxicity_res": null
+  },
+  "safety_misuse": {
+    "jailbreak_res": null,
+    "exaggerated_safety_res": null,
+    "misuse_res": 0.8960817717206133,
+    "toxicity_res": null
+  },
+  "fairness_stereotype_recognition": {
+    "stereotype_recognition": 0.659,
+    "stereotype_agreement": null,
+    "stereotype_query": null,
+    "disparagement": null,
+    "preference": null
+  },
+  "fairness_stereotype_agreement": {
+    "stereotype_recognition": null,
+    "stereotype_agreement": 0.001,
+    "stereotype_query": null,
+    "disparagement": null,
+    "preference": null
+  },
+  "fairness_stereotype_query": {
+    "stereotype_recognition": null,
+    "stereotype_agreement": null,
+    "stereotype_query": 1.0,
+    "disparagement": null,
+    "preference": null
+  },
+  "fairness_disparagement": {
+    "stereotype_recognition": null,
+    "stereotype_agreement": null,
+    "stereotype_query": null,
+    "disparagement": {
+      "sex": 0.003925949226826847,
+      "race": 0.0005200865194681045
+    },
+    "preference": null
+  },
+  "fairness_preference": {
+    "stereotype_recognition": null,
+    "stereotype_agreement": null,
+    "stereotype_query": null,
+    "disparagement": null,
+    "preference": {
+      "overall": 0.49583333333333335,
+      "plain": 0.9916666666666667,
+      "force": 0.0
+    }
+  },
+  "robustness_advglue": {
+    "advglue_res": {
+      "acc_qqp": 0.8591549295774648,
+      "adv_acc_qqp": 0.7464788732394366,
+      "asr_qqp": 0.13114754098360656,
+      "acc_sst2": 0.9461538461538461,
+      "adv_acc_sst2": 0.6692307692307692,
+      "asr_sst2": 0.2926829268292683,
+      "acc_qnli": 0.7744360902255639,
+      "adv_acc_qnli": 0.6616541353383458,
+      "asr_qnli": 0.18446601941747573,
+      "acc_mnli": 0.7603305785123967,
+      "adv_acc_mnli": 0.5785123966942148,
+      "asr_mnli": 0.25,
+      "avg_acc": 0.8350188611173179,
+      "avg_adv_acc": 0.6639690436256916,
+      "avg_asr": 0.21457412180758764,
+      "RS": 0.44939492181810403
+    },
+    "advinstruction_res": null,
+    "ood_detection_res": null,
+    "ood_generalization_res": null
+  },
+  "robustness_advinstruction": {
+    "advglue_res": null,
+    "advinstruction_res": 0.7122787207164666,
+    "ood_detection_res": null,
+    "ood_generalization_res": null
+  },
+  "robustness_ood_detection": {
+    "advglue_res": null,
+    "advinstruction_res": null,
+    "ood_detection_res": 0.5435684647302904,
+    "ood_generalization_res": null
+  },
+  "robustness_ood_generalization": {
+    "advglue_res": null,
+    "advinstruction_res": null,
+    "ood_detection_res": null,
+    "ood_generalization_res": {
+      "ddxplus": 0.6754966887417219,
+      "flipkart": 0.9834815756035579,
+      "overall": 0.8294891321726399
+    }
+  },
+  "privacy_confAIde": {
+    "privacy_confAIde": 0.363175440192931,
+    "privacy_awareness_query_normal": null,
+    "privacy_awareness_query_aug": null,
+    "privacy_leakage": null
+  },
+  "privacy_awareness_query": {
+    "privacy_confAIde": null,
+    "privacy_awareness_query_normal": 0.6392857142857142,
+    "privacy_awareness_query_aug": 1.0,
+    "privacy_leakage": null
+  },
+  "privacy_leakage": {
+    "privacy_confAIde": null,
+    "privacy_awareness_query_normal": null,
+    "privacy_awareness_query_aug": null,
+    "privacy_leakage": {
+      "RtA": 0.635,
+      "TD": 0.03,
+      "CD": 0.08728354978354977
+    }
+  },
+  "ethics_explicit": {
+    "explicit_ethics_res_low": 0.9985443959243085,
+    "explicit_ethics_res_high": 0.9985294117647059,
+    "implicit_ethics_res_ETHICS": null,
+    "implicit_ethics_res_social_norm": null,
+    "emotional_res": null
+  },
+  "ethics_implicit_social_norm": {
+    "explicit_ethics_res_low": null,
+    "explicit_ethics_res_high": null,
+    "implicit_ethics_res_ETHICS": {
+      "overall": 0.7265491982998321,
+      "good": 0.9119170984455959,
+      "neutral": 0.4166666666666667,
+      "bad": 0.851063829787234
+    },
+    "implicit_ethics_res_social_norm": null,
+    "emotional_res": null
+  },
+  "ethics_implicit_ETHICS": {
+    "explicit_ethics_res_low": null,
+    "explicit_ethics_res_high": null,
+    "implicit_ethics_res_ETHICS": null,
+    "implicit_ethics_res_social_norm": {
+      "overall": 0.6431309109009458,
+      "good": 0.8658536585365854,
+      "bad": 0.4204081632653061
+    },
+    "emotional_res": null
+  },
+  "ethics_awareness": {
+    "explicit_ethics_res_low": null,
+    "explicit_ethics_res_high": null,
+    "implicit_ethics_res_ETHICS": null,
+    "implicit_ethics_res_social_norm": null,
+    "emotional_res": {
+      "mission_implicit": 0,
+      "mission_explicit": 0,
+      "mission_open_ended": 0,
+      "culture": 0,
+      "perspective": 1.0,
+      "emotion": 0.88,
+      "capability": 0.75
+    }
+  }
+}

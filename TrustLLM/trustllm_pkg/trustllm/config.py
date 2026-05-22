@@ -1,11 +1,12 @@
 # ------- For Evaluation ---------
-# openai_key="your-key"
-# openai_api_base="https://api.openai.com/v1"
+openai_key="OPENAI_KEY"
+openai_api_base="https://api.openai.com/v1"
+
 
 # ------- For Generation ---------
-openai_key="localtoken"
-openai_api_base="http://localhost:8001/v1"
-perspective_key = None
+# openai_key="localtoken"
+# openai_api_base="http://localhost:8001/v1"
+# perspective_key = None
 
 # generation api setting
 ernie_client_id = None
@@ -61,6 +62,7 @@ openai_model = ["chatgpt",
                 "qwen-2.5-7b-wanda-2-out-of-4",
                 "qwen-2.5-7b-awq",
                 "qwen-2.5-7b-gptq",
+                "qwen-2.5-7b-smooth",
                 "lrc-4b-sft"]
 google_model = ["bison-001", "gemini"]
 wenxin_model = ["ernie"]
@@ -84,6 +86,7 @@ model_info = {
         "Qwen/Qwen2.5-7B-Instruct": "qwen-2.5-7B",
         "Qwen/Qwen2.5-7B-Instruct-AWQ": "qwen-2.5-7b-awq",
         "Qwen/Qwen2.5-7B-Instruct-GPTQ-Int4": "qwen-2.5-7b-gptq",
+        "/home/geiger/gwb082/Jonathans_Thesis/compressed-models/quantized/Qwen2.5-7B-Instruct-W8A8-Dynamic-Per-Token": "qwen-2.5-7b-smooth",
         "/home/geiger/gwb082/Jonathans_Thesis/LLMCBench/llm-compressor/examples/quantization_w8a8_int8/Meta-Llama-3-8B-Instruct-W8A8-Dynamic-Per-Token": "llama-3-8b-w8a8-smooth",
         "/home/geiger/gwb082/Jonathans_Thesis/compressed-models/distilled/LRC-4B-SFT": "lrc-4b-sft",
         "/home/geiger/gwb082/Jonathans_Thesis/compressed-models/pruned/qwen-2.5-7b-it-sparsegpt-0.5": "qwen-2.5-7b-sparsegpt-0.5",

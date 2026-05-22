@@ -21,6 +21,7 @@ eval_res.json
 --port
 testtt
 .claude
+TrustLLM/generation_results
 
 # local run artifacts
 wandb/

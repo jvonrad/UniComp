@@ -3,7 +3,7 @@ from trustllm_pkg.trustllm.generation.generation import LLMGeneration
     
 
 
-MODEL_PATH = "/home/geiger/gwb082/Jonathans_Thesis/LLMCBench/llm-compressor/examples/quantization_w8a8_int8/Meta-Llama-3-8B-Instruct-W8A8-Dynamic-Per-Token"
+MODEL_PATH = "/home/geiger/gwb082/Jonathans_Thesis/compressed-models/quantized/Qwen2.5-7B-Instruct-W8A8-Dynamic-Per-Token"
 DATA_ROOT  = "/home/geiger/gwb082/Jonathans_Thesis/LLMCBench/TrustLLM/dataset/dataset"
 
 COMMON = dict(

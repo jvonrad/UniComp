@@ -1,12 +1,15 @@
-<h1 align="center">🎉 Accepted to EMNLP 2026 Main Conference 🎉</h1>
-
 # UniComp: A Unified Evaluation of LLM Compression via Pruning, Quantization & Distillation
 
 <p align="center">
 <b>Jonathan von Rad</b>, <b>Yong Cao</b>, <b>Andreas Geiger</b>
-<br>
-<a href="https://arxiv.org/abs/2602.09130">📄 Paper (arXiv:2602.09130)</a>
 </p>
+
+<p align="center">
+<a href="https://arxiv.org/abs/2602.09130"><img src="https://img.shields.io/badge/arXiv-2602.09130-b31b1b.svg" alt="arXiv"></a>
+<img src="https://img.shields.io/badge/EMNLP-2026%20Main-1f6feb.svg" alt="EMNLP 2026 Main">
+</p>
+
+> 🎉 **News:** UniComp has been accepted to the **EMNLP 2026 Main Conference**.
 
 <p align="center">
 <img src="./figures/main-figure.png" width="60%">

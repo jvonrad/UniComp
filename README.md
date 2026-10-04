@@ -264,10 +264,13 @@ The resulting checkpoints (`*-arc-gsm8k-math`) are then evaluated with the stand
 If you find UniComp useful, please cite:
 
 ```bibtex
-@inproceedings{vonrad2026unicomp,
-  title     = {UniComp: A Unified Evaluation of Large Language Model Compression via Pruning, Quantization, and Distillation},
-  author    = {von Rad, Jonathan and Cao, Yong and Geiger, Andreas},
-  booktitle = {Proceedings of the 2026 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
-  year      = {2026}
+@misc{vonrad2026unicompunifiedevaluationlarge,
+      title={UniComp: A Unified Evaluation of Large Language Model Compression via Pruning, Quantization, and Distillation}, 
+      author={Jonathan von Rad and Yong Cao and Andreas Geiger},
+      year={2026},
+      eprint={2602.09130},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2602.09130}, 
 }
 ```
